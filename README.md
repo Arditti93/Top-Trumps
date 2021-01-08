@@ -8,7 +8,7 @@ The game isn't finished as of yet,
 
 Taken the approach of developing my own custom functions within jQuery using the `$.fn` method.
 
-* `$.fn` is an alias for jQuery.prototype which allows you to extend jQuery with your own functions.*
+*`$.fn` is an alias for jQuery.prototype which allows you to extend jQuery with your own functions.*
 
 I am learning and developing this solution as I go. 
 
