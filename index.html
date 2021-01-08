@@ -1,0 +1,376 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>jQuery TopTrumps Demo</title>
+    <link href="jquery.toptrumps.min.css" media="all" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script src="jquery.toptrumps.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#cardgame').toptrumps({
+          'fields' : [
+            {'name': 'Loyalty', 'comparison' : '>'},
+            {'name': 'Agility',  'comparison' : '>'},
+            {'name': 'Cuddliness',  'comparison' : '>'},
+            {'name': 'Appetite', 'comparison' : '<'}
+          ],
+          'cards' : [
+            {'name': 'Card 1', 'image' : 'assets/.jpg', 'fields' : [8, 6, 5, 2]},
+            {'name': 'Card 2', 'image' : 'assets/.jpg', 'fields' : [6, 7, 4, 4]},
+            {'name': 'Card 3', 'image' : 'assets/.jpg', 'fields' : [8, 6, 3, 7]},
+            {'name': 'Card 4', 'image' : 'assets/.jpg', 'fields' : [10, 5, 2, 4]},
+            {'name': 'Card 5', 'image' : 'assets/.jpg', 'fields' : [7, 5, 10, 6]},
+            {'name': 'Card 6', 'image' : 'assets/.jpg', 'fields' : [7, 4, 9, 6]},
+            {'name': 'Card 7', 'image' : 'assets/.jpg', 'fields' : [2, 7, 5, 2]},
+            {'name': 'Card 8', 'image' : 'assets/.jpg', 'fields' : [4, 3, 3, 10]},
+            {'name': 'Card 9', 'image' : 'assets/.jpg', 'fields' : [6, 9, 4, 3]},
+            {'name': 'Card 10', 'image' : 'assets/.jpg', 'fields' : [7, 1, 6, 8]},
+            {'name': 'Card 11', 'image' : 'assets/.jpg', 'fields' : [7, 4, 6, 3]},
+            {'name': 'Card 12', 'image' : 'assets/.jpg', 'fields' : [6, 4, 1, 5]},
+            {'name': 'Card 13', 'image' : 'assets/.jpg', 'fields' : [6, 1, 6, 10]},
+            {'name': 'Card 14', 'image' : 'assets/.jpg', 'fields' : [5, 10, 3, 8]},
+            {'name': 'Card 15', 'image' : 'assets/.jpg', 'fields' : [8, 7, 5, 4]},
+            {'name': 'Card 16', 'image' : 'assets/.jpg', 'fields' : [4, 10, 5, 7]},
+            {'name': 'Card 17', 'image' : 'assets/.jpg', 'fields' : [3, 8, 3, 5]},
+            {'name': 'Card 18', 'image' : 'assets/.jpg', 'fields' : [5, 2, 5, 7]},
+            {'name': 'Card 19', 'image' : 'assets/.jpg', 'fields' : [2, 2, 1, 7]},
+            {'name': 'Card 20', 'image' : 'assets/.jpg', 'fields' : [7, 3, 2, 9]},
+            {'name': 'Card 21', 'image' : 'assets/.jpg', 'fields' : [3, 7, 4, 1]},
+            {'name': 'Card 22', 'image' : 'assets/.jpg', 'fields' : [10, 7, 3, 7]},
+            {'name': 'Card 23', 'image' : 'assets/.jpg', 'fields' : [4, 7, 2, 7]},
+            {'name': 'Card 24', 'image' : 'assets/.jpg', 'fields' : [7, 7, 6, 6]},
+            {'name': 'Card 25', 'image' : 'assets/.jpg', 'fields' : [2, 4, 2, 7]},
+            {'name': 'Card 26', 'image' : 'assets/.jpg', 'fields' : [5, 8, 5, 4]},
+            {'name': 'Card 27', 'image' : 'assets/.jpg', 'fields' : [9, 3, 5, 6]},
+            {'name': 'Card 28', 'image' : 'assets/.jpg', 'fields' : [2, 9, 6, 5]},
+            {'name': 'Card 29', 'image' : 'assets/.jpg', 'fields' : [10, 5, 5, 4]},
+            {'name': 'Card 30', 'image' : 'assets/.jpg', 'fields' : [6, 6, 4, 3]},
+            {'name': 'Card 31', 'image' : 'assets/.jpg', 'fields' : [1, 9, 3, 1]},
+            {'name': 'Card 32', 'image' : 'assets/.jpg', 'fields' : [9, 3, 4, 6]}
+          ],
+          'sameVaule' : 'requeue',
+          'onStart' : function($instance, settings) {
+            let title = 'Start Game';
+            $instance.find('.tt-start-button').html(title);
+          },
+          'onFinish' : function($instance, settings) {
+            let message = '';
+            if (settings.points.cpu > settings.points.user) {
+               message+= '<h2>You have lost!</h2>';
+            }
+            else if (settings.points.cpu < settings.points.user) {
+               message+= '<h2>Congratulations. You win!</h2>';
+            }
+            else {
+               message+= '<h2>Lame. Just a draw.</h2>';
+            }
+
+            $instance.prepend($('<div>').css('text-align', 'center').html(message));
+          },
+          'displayCard' : function($card, card, fields) {
+            $card.find('.tt-card-fields')
+              .before('<img src="' +  card.image + '" alt="' + card.name + '" width="300" height="300">');
+          }
+        });
+        //The $.fn is an alias for jQuery.prototype which allows you 
+        //to extend jQuery with your own functions.
+
+        // marks variables as jQuery objects)
+
+        $.fn.toptrumps = function(options) {
+          let methods = {
+            'prepareSettings' : function(options) {
+              let settings = $.extend(true, {
+                // trick = if player and cpu pick the same value 
+                'difficulty' : 'normal',
+                'sameValue' : 'ignore',
+                'fields' : [],
+                'cards' : [],
+
+                //called after cards have been built.
+                'onStart' : function($instance, settings) {},
+
+                //called when game ends.
+                'onFinish' : function($instance, settings) {},
+
+                //displays card on the page
+                'displayCard' : function($card, card, fields) {}
+              }, options)
+              //prepare players 
+              //cpu = computer
+              settings.players = ['user', 'cpu']
+
+              //prepare card comparison fields 
+              //.methods = select local methods 
+              settings.fields = methods.prepareFields(settings.fields);
+
+              //prepare game cards 
+              settings.cards = methods.prepareCards(settings.cards, settings.fields)
+
+              //prepare trumps
+              settings.trumps = methods.prepareTrumps(settings.cards, seettings.fields)
+
+              //prepare card stacks for both players
+              settings.stacks = methods.prepareStacks(settings.cards, settings.players)
+
+              //points array
+              settings.points = {'user' : 0, 'cpu' : 0}
+
+              settings.beginner = 0;
+                if (settings.difficulty === 'hard') {
+                  settings.beginner = 1;
+                }
+
+              //requeue array if same value feilds are picked 
+              settings.requeued = {'cpu' : [], 'user' : []}
+              return settings
+            },
+
+            //shuffle cards local method 
+            'shuffleCards' : function(cards) {
+                let i = cards.length
+
+                if (i === 0) {
+                  return false
+                }
+              // While there remain elements to shuffl
+                while (--i) {
+                  let j = Math.floor(Math.random() *(i + 1))
+                  // And swap it with the current element
+                  let tempi = cards[i]
+                  let tempj = cards[j]
+                  cards[i] = tempj
+                  cards[j] = tempi
+                }
+                return cards
+            },
+
+            'prepareFields' : function(fields) {
+              let validFields = []
+              for (let i = 0; i < fields.length; i++){
+                //typeof() will return the type of value in it's parameters.
+                //name and comparison defined in fields
+                if (typeof fields[i].name === 'underfined' || typeof fields[i].comparison === 'underfined') {
+                  continue
+                }
+                if(fields[i].comparison !== '<' && fields[i].comparison !== '>') {
+                  continue
+                }
+
+                validFields.push(fields[i])
+                
+              }
+              return validFields
+
+            },
+            'prepareCards' : function(cards, fields) {
+              var validCards = [];
+              for (var i = 0; i < cards.length; i++) {
+                if (typeof cards[i].name === 'undefined' || typeof cards[i].fields === 'undefined') {
+                  continue;
+                }
+
+                if (cards[i].fields.length !== fields.length) {
+                  continue;
+                }
+
+                validCards.push(cards[i]);
+              }
+
+              // Shuffle cards to randomize cards order.
+              validCards = methods.shuffleCards(validCards);
+
+              return validCards;
+            },
+
+            'prepareTrumps' : function(cards, fields) {
+              let trumps = []
+              for (let i = 0; i < cards.length; i++) {
+                for (let j = 0; j < cards[i].fields.length; j++){
+                  if (typeof trumps [j] === 'underfined') {
+                    trumps[j] = cards[i].fields[j];
+                  }
+                  else if (fields[j].comparison === '>' && cards[i].fields[j] > trumps[j]){
+                    trumps[j] = cards[i].fields[j];
+                  }
+                  else if (fields[j].comparison === '<' && cards[i].fields[j] < trumps[j]){
+                    trumps[j] = cards[i].fields[j]
+                  }
+                }
+              }
+              return trumps
+            },
+
+            'prepareStacks' : function(cards, players) {
+              let stacks = []
+              for (let i = 0; i < players.length; i++) {
+                stacks[players[i]] = []
+              }
+              let count = 0
+              $.each(cards, function(key, value){
+                stacks[players[count]].push(value)
+                count ++
+                if (count >= players.length){
+                  count = 0
+                }
+              })
+              return stacks
+            },
+
+            'renderGame' : function(tt, settings) {
+              tt.addClass('tt-wrapper')
+
+              for(let i = 0; i < settings.players.length; i++){
+                methods.renderCardDeck(tt, settings, settings.players[i])
+              }
+
+              let $overlay = $('<div/>').addClass('tt-overlay')
+              $('<a/>').addClass('tt-start-button')/html('Start Game ').appendTo($overlay)
+              $overlay.appendTo(tt)
+
+              $('a.tt-start-button', tt).click(function(e){
+                methods.startGame(tt, tt.toptrumps)
+                e.preventDefault()
+              })
+              settings.onInit(tt, $.extend(true, {}, settings))
+            },
+
+            'renderCardDeck' : function(tt, settings, player) {
+              let $player = $('<div/>').addClass('tt-side tt-' + player);
+              $('<div/>').addClass('tt-card-wrapper').appendTo($player)
+              $('<div/>').addClass('tt-points').html('0').appendTo($player)
+
+              if (settings.sameValue === 'requeue') {
+                $('<div/>').addClass('tt-side-requeued').appendTo($player)
+
+              }
+              $player.appendTo(tt)
+            },
+
+            'renderCards' : function(settings, tt) {
+              let cards = settings.activeCards
+
+              $('.tt-card', tt).remove()
+
+              methods.renderCard(cards.cpu, 'cpu', settings, tt)
+              methods.renderCard(cards.user, 'user', settings,tt)
+
+              //event handler to cards fields
+              if (tt.topTrumpsTurn === 'user') {
+                $('.tt-card-field', tt).click(function(){
+                  let indent = $(this).attr('id')
+                  let ident_arr = indent.split('-')
+
+                  methods.compareCards(indent_arr[(indent_arr.length - 1 )], tt.toptrumps, tt)
+                  return false
+                })
+              }
+              else {
+                let field = methods.selectField(tt.toptrumps, tt)
+                $('#tt-card-field-cpu' + field).addClass('active')
+                setTimeout(function(){
+                  methods.compareCards(field, tt.toptrumps, tt)
+                }, 2000)
+              }
+            },
+
+            'renderCard' : function(card, player, settings, tt) {
+                var $card = $('<div/>').addClass('tt-card');
+
+                if (player === tt.topTrumpsTurn || player === 'user') {
+                  $('<div/>').addClass('tt-card-name').html(card.name).appendTo($card);
+
+                  var $fields = methods.renderCardFields(card, settings.fields, settings.trumps, player);
+                  $fields.appendTo($card);
+                }
+                else {
+                  $('<div/>').addClass('tt-card-name').html('?').appendTo($card);
+                  $card.addClass('deactivated');
+                }
+
+                settings.renderCard($card, $.extend(true, {}, card), $.extend(true, {}, settings.fields));
+
+                $card.appendTo(tt.find('.tt-' + player + ' .tt-card-wrapper'));  
+            },
+            'renderCardFields' : function(card, fields, trumps, player) {
+                var $fields = $('<div/>').addClass('tt-card-fields');
+
+                for (var i = 0; i < fields.length; i++) {
+                  var $field = $('<div/>').attr('id', 'tt-card-field-' + player + '-' + i).addClass('tt-card-field');
+                  $('<span/>').addClass('tt-card-field-value').html(card.fields[i]).appendTo($field);
+
+                  if (typeof fields[i].classes !== 'undefined') {
+                    $field.addClass(fields[i].classes);
+                  }
+
+                  if (typeof fields[i].prefix !== 'undefined') {
+                    $('<span/>').addClass('tt-card-field-prefix').html(fields[i].prefix).prependTo($field);
+                  }
+
+                  if (typeof fields[i].suffix !== 'undefined') {
+                    $('<span/>').addClass('tt-card-field-suffix').html(fields[i].suffix).appendTo($field);
+                  }
+
+                  $('<span/>').addClass('tt-card-field-name').html(fields[i].name).prependTo($field);
+
+                  // Mark this field as a trump.
+                  if (card.fields[i] === trumps[i]) {
+                    $field.addClass('top-trump');
+                  }
+
+                  $field.appendTo($fields);
+                }
+
+                return $fields;
+            },
+
+            'startGame ' : function(tt, settings) {
+              tt.topTrumpsTurn = settings.players[settings.beginner]
+              $('.tt-overlay', tt).remove()
+              methods.nextTurn(tt, settings)
+            },
+
+            'nextturn' : function(tt, settings) {
+              settings.activeCards = {
+                'cpu' : settings.stacks.cpu.shift(),
+                'user' : settings.stacks.user.shift()
+              }
+
+              methods.renderCards(settings, tt)
+            },
+
+            'compareCards' : function(field, settings, tt) {
+              let activeCards = settings.activeCards
+
+              let result = 'draw'
+              switch(settings.fields[field].comparison) {
+                case '<':
+                  if(activeCards.cpu.fields[field] < activeCards.user.fields[field]) {
+                    result = 'cpu'
+                  }
+                  else {
+                    result = 'user'
+                  }
+                  break;
+                case '>':
+                  if(activeCards.cpu.fields[field] > activeCards.user.fields[field]) {
+                    result = 'cpu';
+                  }
+                  else {
+                    result ='user'
+                  }
+                  break;
+              }
+              methods.processResult(result, settings, tt)
+            },
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="cardgame"></div>
+  </body>
+</html>   
