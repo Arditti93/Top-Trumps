@@ -56,6 +56,7 @@
             $instance.find('.tt-start-button').html(title);
           },
           'onFinish' : function($instance, settings) {
+            // += concatenate
             let message = '';
             if (settings.points.cpu > settings.points.user) {
                message+= '<h2>You have lost!</h2>';
@@ -74,11 +75,9 @@
               .before('<img src="' +  card.image + '" alt="' + card.name + '" width="300" height="300">');
           }
         });
+
         //The $.fn is an alias for jQuery.prototype which allows you 
         //to extend jQuery with your own functions.
-
-        // marks variables as jQuery objects)
-
         $.fn.toptrumps = function(options) {
           let methods = {
             'prepareSettings' : function(options) {
@@ -135,7 +134,7 @@
                 if (i === 0) {
                   return false
                 }
-              // While there remain elements to shuffl
+              // While there remain elements to shuffle
                 while (--i) {
                   let j = Math.floor(Math.random() *(i + 1))
                   // And swap it with the current element
@@ -185,39 +184,7 @@
               return validCards;
             },
 
-            'prepareTrumps' : function(cards, fields) {
-              let trumps = []
-              for (let i = 0; i < cards.length; i++) {
-                for (let j = 0; j < cards[i].fields.length; j++){
-                  if (typeof trumps [j] === 'underfined') {
-                    trumps[j] = cards[i].fields[j];
-                  }
-                  else if (fields[j].comparison === '>' && cards[i].fields[j] > trumps[j]){
-                    trumps[j] = cards[i].fields[j];
-                  }
-                  else if (fields[j].comparison === '<' && cards[i].fields[j] < trumps[j]){
-                    trumps[j] = cards[i].fields[j]
-                  }
-                }
-              }
-              return trumps
-            },
-
-            'prepareStacks' : function(cards, players) {
-              let stacks = []
-              for (let i = 0; i < players.length; i++) {
-                stacks[players[i]] = []
-              }
-              let count = 0
-              $.each(cards, function(key, value){
-                stacks[players[count]].push(value)
-                count ++
-                if (count >= players.length){
-                  count = 0
-                }
-              })
-              return stacks
-            },
+            //PREPARE TRUMPS  FUNCTION (NOT DONALD) TO GO HEAR
 
             'renderGame' : function(tt, settings) {
               tt.addClass('tt-wrapper')
@@ -276,56 +243,7 @@
               }
             },
 
-            'renderCard' : function(card, player, settings, tt) {
-                var $card = $('<div/>').addClass('tt-card');
-
-                if (player === tt.topTrumpsTurn || player === 'user') {
-                  $('<div/>').addClass('tt-card-name').html(card.name).appendTo($card);
-
-                  var $fields = methods.renderCardFields(card, settings.fields, settings.trumps, player);
-                  $fields.appendTo($card);
-                }
-                else {
-                  $('<div/>').addClass('tt-card-name').html('?').appendTo($card);
-                  $card.addClass('deactivated');
-                }
-
-                settings.renderCard($card, $.extend(true, {}, card), $.extend(true, {}, settings.fields));
-
-                $card.appendTo(tt.find('.tt-' + player + ' .tt-card-wrapper'));  
-            },
-            'renderCardFields' : function(card, fields, trumps, player) {
-                var $fields = $('<div/>').addClass('tt-card-fields');
-
-                for (var i = 0; i < fields.length; i++) {
-                  var $field = $('<div/>').attr('id', 'tt-card-field-' + player + '-' + i).addClass('tt-card-field');
-                  $('<span/>').addClass('tt-card-field-value').html(card.fields[i]).appendTo($field);
-
-                  if (typeof fields[i].classes !== 'undefined') {
-                    $field.addClass(fields[i].classes);
-                  }
-
-                  if (typeof fields[i].prefix !== 'undefined') {
-                    $('<span/>').addClass('tt-card-field-prefix').html(fields[i].prefix).prependTo($field);
-                  }
-
-                  if (typeof fields[i].suffix !== 'undefined') {
-                    $('<span/>').addClass('tt-card-field-suffix').html(fields[i].suffix).appendTo($field);
-                  }
-
-                  $('<span/>').addClass('tt-card-field-name').html(fields[i].name).prependTo($field);
-
-                  // Mark this field as a trump.
-                  if (card.fields[i] === trumps[i]) {
-                    $field.addClass('top-trump');
-                  }
-
-                  $field.appendTo($fields);
-                }
-
-                return $fields;
-            },
-
+            //RENDER CARD AND CARD FEILD FUNCTIONS TO GO HEAR
             'startGame ' : function(tt, settings) {
               tt.topTrumpsTurn = settings.players[settings.beginner]
               $('.tt-overlay', tt).remove()
